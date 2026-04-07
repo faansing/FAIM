@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Fine Art Investment Model — 5-Layer Decision Protocol for AI Infrastructure + Energy Transition LEAPS investing">
+  <title>FAIM v1.0 — Fine Art Investment Model</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800;1,14..32,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- ── HEADER ─────────────────────────────────────────── -->
+  <header class="app-header">
+    <div class="header-brand">
+      <div class="brand-mark">◆</div>
+      <div class="brand-text">
+        <span class="brand-name">FAIM</span>
+        <span class="brand-sub">v1.0 · Fine Art Investment Model</span>
+      </div>
+    </div>
+
+    <nav class="main-nav" role="navigation" aria-label="Primary navigation">
+      <button class="nav-btn active" data-tab="analyze" id="nav-analyze">
+        <span class="nav-icon">⬡</span>
+        <span class="nav-label">Analyze</span>
+      </button>
+      <button class="nav-btn" data-tab="cards" id="nav-cards">
+        <span class="nav-icon">◫</span>
+        <span class="nav-label">Trade Cards</span>
+        <span class="nav-badge" id="cards-count"></span>
+      </button>
+      <button class="nav-btn" data-tab="calibration" id="nav-calibration">
+        <span class="nav-icon">◈</span>
+        <span class="nav-label">Calibration</span>
+      </button>
+    </nav>
+
+    <div class="header-actions">
+      <span class="sector-pill">AI Infra · Energy Transition</span>
+      <button class="icon-btn" id="settings-btn" aria-label="Settings" title="Settings">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ── MAIN TABS ──────────────────────────────────────── -->
+  <main class="app-main">
+    <div id="tab-analyze" class="tab active">
+      <div id="analyze-content"></div>
+    </div>
+    <div id="tab-cards" class="tab" style="display:none">
+      <div id="cards-content"></div>
+    </div>
+    <div id="tab-calibration" class="tab" style="display:none">
+      <div id="calibration-content"></div>
+    </div>
+  </main>
+
+</div>
+
+<!-- ── MODAL ─────────────────────────────────────────────── -->
+<div id="modal-overlay" class="modal-overlay" style="display:none" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal-box" id="modal-box"></div>
+</div>
+
+<!-- ── TOASTS ─────────────────────────────────────────────── -->
+<div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+<script src="core.js"></script>
+<script src="wizard.js"></script>
+<script src="cards.js"></script>
+</body>
+</html>

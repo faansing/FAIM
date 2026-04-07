@@ -1,7 +1,49 @@
 # Changelog
 
-All notable changes to FAIM are documented here.  
+All notable changes to FAIM are documented here.
 Format: [Semantic Versioning](https://semver.org/) · Date: YYYY-MM-DD
+
+---
+
+## [2.0.0] — 2026-04-06
+
+### Added — Python Analysis Stack
+- **`faim_engine.py`** — Complete 5-layer Python analysis engine with:
+  - `DataFetcher` class: fetches real-time data from Yahoo Finance via yfinance
+  - `FAIMEngine` class: L0-L5 protocol implementation
+  - Structured data classes: `L1Result`, `L2Result`, `L3Result`, `L4Result`, `Verdict`
+  - Report generation (console + markdown)
+  - Auto management scoring (5-dimension heuristic: FCF, ROIC, Cash, Growth, Margin)
+  - Auto GM trend calculation from quarterly financials
+- **`analyze.py`** — Multi-ticker analysis runner with:
+  - Pre-configured thesis for NVDA, TSLA, AAPL
+  - `--compare` flag for side-by-side comparison table
+  - `--report` flag for markdown report generation
+  - `--portfolio` flag for custom portfolio size
+- **`reports/`** — Auto-generated analysis reports (NVDA, TSLA, AAPL)
+
+### Added — Mega-Cap Tech Sector
+- New sector profile: "Mega-Cap Tech (AAPL/MSFT/GOOG class)"
+  - Rev Growth > 5%, Gross Margin > 35%, GM Trend > 50 bps, Runway > 24 months
+  - Covers AAPL, MSFT, GOOG, META, AMZN, TSLA
+- `faim_engine.py` auto-classifies sector from ticker or industry
+
+### Changed
+- **SOP.md** — Completely rewritten in English. Professional buy-side quality.
+  Python-first workflow. Sector-aware thresholds table. FAQ updated.
+- **README.md** — Rewritten for Python-first workflow. Sample output included.
+- **data_fetch.py** — All comments in English. Sector-aware thresholds.
+  Added `--sector` CLI flag (ai/energy).
+- **requirements.txt** — Updated with specific version pins
+
+### Fixed
+- XSS: `htmlEscape()` now applied to all user-supplied text in wizard.js + cards.js
+- Sector thresholds: data_fetch.py now matches core.js thresholds per sector
+
+### Internal
+- Created `内部文档/` folder (gitignored) with:
+  - `使用说明.md` — Chinese usage guide
+  - `审查笔记.md` — Chinese logic audit note
 
 ---
 
@@ -10,51 +52,18 @@ Format: [Semantic Versioning](https://semver.org/) · Date: YYYY-MM-DD
 ### Fixed
 - **F1 (Critical)** — L1 Quality Gate now uses sector-calibrated thresholds.
   Energy Transition sector: RevGrowth >5%, GrossMargin >20%, GMTrend >50bps.
-  Previously, hardcoded AI Infra thresholds (RevGrowth >15%, GM >40%) would
-  incorrectly FAIL every utility/energy stock (CEG, VST, NEE, etc.).
-- **F2** — Constants consolidated: `CAL_CLOSED_MIN` and `MODEL_VERSION` moved to
-  `core.js` as single source of truth.
-- **F3** — Bull probability guardrail: soft warning toast when bull scenario
-  probability exceeds 40% (SOP guidance) or 65% (hard overconfidence flag).
-  Based on Kahneman/Tetlock calibration research.
-- **F4** — L2 Edge Type structured picker added. Six categories force a
-  falsifiable edge hypothesis before proceeding: Channel/Supply, Wrong Metric,
-  Conservative Guidance, Historical Analog, Structural Shift, Other.
-  Validation blocks progression if no Edge Type is selected.
-- **F5** — IV/Theta warning in L4: if user selects "High IV" in Q2, a red
-  alert banner explains IV crush risk (30–40% loss even on correct direction).
-- **F6** — Live correlation check in L4: computes combined portfolio % exposure
-  for open same-sector positions. Warns (yellow) above 0%, alerts (red) at ≥8%
-  per SOP §5 maximum correlated position size.
-- **F7** — Cards now store `sectorFit`, `l2EdgeType`, and `modelSnapshot`
-  (version + active thresholds). Essential for calibration segmentation and
-  audit trail when thresholds change after calibration cycles.
-- **F8** — "Exit Rules Followed?" field added to trade card close form.
-  Options: Fully / Partially / Deviated. Feeds L5 calibration score.
-- **F9** — Calibration layer weakness scores rewritten with transparent,
-  self-documenting formulas. Removed unexplained `* 80` multiplier.
-  L5 score now uses `exitDiscipline` field instead of timing proxy.
-- **F10 (XSS)** — `htmlEscape()` utility added to `core.js`. User-supplied
-  text sanitized before insertion into `innerHTML`.
+- **F2** — Constants consolidated in `core.js`.
+- **F3** — Bull probability guardrail (Kahneman/Tetlock research).
+- **F4** — L2 Edge Type structured picker (6 categories).
+- **F5** — IV/Theta warning in L4.
+- **F6** — Live correlation check in L4.
+- **F7** — Cards store `sectorFit`, `l2EdgeType`, `modelSnapshot`.
+- **F8** — "Exit Rules Followed?" field for L5 calibration.
+- **F9** — Calibration layer scores use transparent formulas.
+- **F10** — `htmlEscape()` XSS prevention.
 
 ### Added
-- `getL1Thresholds(sector)` in `core.js` — centralized, sector-aware threshold
-  lookup. Used by both `evaluateL1()` and the L1 wizard step UI hints.
-- `getModelSnapshot()` in `core.js` — saves active threshold configuration
-  with each logged trade card for historical audit trail.
-- `sectorFit` default in `collect()` step 0 — fixes bug where user who never
-  clicked the sector toggle would have `undefined` sectorFit.
-- L1 step now shows active sector thresholds in the UI (dynamic hints).
-- Calibration locked screen now shows two progress rings: Total Cards + Closed.
-- `⎘ Backup` button in Trade Cards tab shows localStorage export snippet.
-- Layer weakness radar now shows human-readable label under each L1–L5 score.
-- CSV export now includes `sectorFit`, `l2EdgeType`, and `exitDiscipline`.
-
-### Repository
-- Added `LICENSE` (MIT)
-- Added `.gitignore` (Python, macOS, IDE)
-- Added `requirements.txt` (`yfinance>=0.2.0`, `pandas>=2.0.0`)
-- Fixed placeholder `YOUR_USERNAME` in README
+- Sector-aware L1 thresholds, model snapshot, calibration progress rings.
 
 ---
 
@@ -62,17 +71,14 @@ Format: [Semantic Versioning](https://semver.org/) · Date: YYYY-MM-DD
 
 ### Added
 - Initial release of FAIM (Fine Art Investment Model)
-- 5-layer decision protocol wizard (Setup → L1 → L2 → L3 → L4 → L5 → Summary)
-- Weighted EV calculator with Bull / Base / Bear scenarios
-- Instrument decision tree (LEAPS vs Stock, Q1–Q5)
-- Trade card logging with exit reflection fields
-- Calibration dashboard (unlocks at 15 total + 10 closed cards — SOP §6.1)
-- localStorage persistence + CSV export + localStorage JSON backup
-- `data_fetch.py` Python helper for L1/L2 data pre-fill via Yahoo Finance
-- `SOP.md` full Standard Operating Procedure (Chinese/English bilingual)
-- Offline-first, zero-dependency web application
+- 5-layer decision protocol wizard
+- Trade card logging with exit reflection
+- Calibration dashboard (15 total + 10 closed)
+- localStorage persistence + CSV export
+- `data_fetch.py` Python helper
+- Offline-first web application
 
 ---
 
-*FAIM follows [Semantic Versioning](https://semver.org/):*  
-*MAJOR = breaking change to 5-layer framework · MINOR = new feature · PATCH = bug fix*
+*FAIM follows [Semantic Versioning](https://semver.org/):*
+*MAJOR = breaking change to framework · MINOR = new feature · PATCH = bug fix*

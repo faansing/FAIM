@@ -1,19 +1,20 @@
 # FAIM — Fine Art Investment Model
 
-> A structured, self-improving 5-layer decision protocol for retail investors.  
-> Sectors: **AI Infrastructure + Energy Transition** · Instruments: **LEAPS (primary) · Stock**  
+> A structured, self-improving 5-layer decision protocol for retail investors with analytical backgrounds.
+> Sectors: **AI Infrastructure · Energy Transition · Mega-Cap Tech**
+> Instruments: **LEAPS (primary) · Stock**
 > Philosophy: Results over narrative. EV over win rate. Calibration over conviction.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)](CHANGELOG.md)
-[![No Framework](https://img.shields.io/badge/stack-vanilla%20JS-green.svg)]()
+[![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](CHANGELOG.md)
+[![Python](https://img.shields.io/badge/python-3.8%2B-green.svg)]()
 [![Offline First](https://img.shields.io/badge/offline-first-teal.svg)]()
 
 ---
 
 ## What Is FAIM?
 
-FAIM is a **decision-making discipline**, not a stock screener.  
+FAIM is a **decision-making discipline**, not a stock screener.
 It forces you to quantify every judgment before you act — then records your decisions to find your systematic biases over time.
 
 It combines:
@@ -29,18 +30,31 @@ It combines:
 ## Quick Start
 
 ```bash
-# No build step. No npm install. Just open the file.
-open index.html
+# Install dependencies
+pip install yfinance pandas
 
-# Or run a local server (avoids browser security restrictions on file:// URLs)
+# Run full analysis (NVDA, TSLA, AAPL)
+python analyze.py
+
+# Single ticker
+python analyze.py NVDA
+
+# Side-by-side comparison table
+python analyze.py NVDA TSLA AAPL --compare
+
+# Save markdown reports
+python analyze.py --report
+
+# Quick data lookup
+python data_fetch.py NVDA
+python data_fetch.py CEG --sector energy
+```
+
+### Web App (Visual Companion)
+```bash
+# Interactive wizard + trade card logging + calibration dashboard
 python -m http.server 8080
 # → visit http://localhost:8080
-
-# Optional: Python data helper for L1/L2 pre-fill
-pip install -r requirements.txt
-python data_fetch.py NVDA              # single ticker full report
-python data_fetch.py NVDA CEG ANET    # side-by-side comparison
-python data_fetch.py NVDA --json      # JSON output for scripting
 ```
 
 ---
@@ -49,14 +63,20 @@ python data_fetch.py NVDA --json      # JSON output for scripting
 
 ```
 Model_v1/
-├── index.html          ← App entry point (open this)
+├── faim_engine.py      ← Core Python analysis engine (5 layers)
+├── analyze.py          ← Multi-ticker analysis runner + comparison
+├── data_fetch.py       ← Quick data lookup helper
+├── reports/            ← Generated markdown analysis reports
+│   ├── NVDA_report.md
+│   ├── TSLA_report.md
+│   └── AAPL_report.md
+├── index.html          ← Web app entry (double-click or local server)
 ├── core.js             ← State, math engine, sector thresholds
-├── wizard.js           ← 5-layer wizard (Steps 0–6)
+├── wizard.js           ← Interactive 5-layer wizard
 ├── cards.js            ← Trade card log + calibration dashboard
-├── style.css           ← UI design system (dark mode, glassmorphism)
-├── data_fetch.py       ← Python data helper — maps to wizard field IDs
-├── requirements.txt    ← Python deps: yfinance, pandas
-├── SOP.md              ← Full Standard Operating Procedure (bilingual)
+├── style.css           ← UI design system
+├── SOP.md              ← Full Standard Operating Procedure (English)
+├── requirements.txt    ← Python dependencies
 ├── CHANGELOG.md        ← Version history
 ├── LICENSE             ← MIT
 └── README.md           ← This file
@@ -68,21 +88,38 @@ Model_v1/
 
 | Layer | Name | Gate | Threshold |
 |-------|------|------|-----------|
-| **L0** | Setup | Sector guardrail | AI Infra or Energy Transition only |
-| **L1** | Quality Gate | 4 of 5 checks pass | Rev growth, GM, ROIC, Runway, Mgmt |
+| **L0** | Setup | Sector guardrail | AI Infra / Energy / Mega-Cap Tech |
+| **L1** | Quality Gate | 4 of 5 checks | Rev growth, GM, ROIC, Runway, Mgmt |
 | **L2** | Mispricing | Edge identified | ≥10% gap vs consensus + edge type |
-| **L3** | Thesis | Kill switch defined | Probs sum to 100% · Bull ≤ 40% |
+| **L3** | Thesis | Kill switch + scenarios | Probs sum to 100% · Bull ≤ 40% |
 | **L4** | Position Size | EV/Risk ratio | HIGH: 5–8% · MED: 2–4% · LOW: skip |
-| **L5** | Monitor & Exit | 3 checkpoints | Pre-defined exit rules, locked at entry |
+| **L5** | Monitor & Exit | 3 checkpoints | Pre-defined exit rules, locked |
 
 ### Sector-Calibrated L1 Thresholds
 
-| Metric | AI Infrastructure | Energy Transition |
-|--------|-------------------|-------------------|
-| Revenue growth | > 15% | > 5% |
-| Gross margin | > 40% | > 20% |
-| GM trend | > 200 bps/yr | > 50 bps/yr |
-| Cash runway | > 18 months | > 18 months |
+| Metric | AI Infrastructure | Energy Transition | Mega-Cap Tech |
+|--------|-------------------|-------------------|---------------|
+| Revenue growth | > 15% | > 5% | > 5% |
+| Gross margin | > 40% | > 20% | > 35% |
+| GM trend | > 200 bps/yr | > 50 bps/yr | > 50 bps/yr |
+| Cash runway | > 18 months | > 18 months | > 24 months |
+
+---
+
+## Sample Output
+
+```
+python analyze.py --compare
+
+  Metric                           NVDA           TSLA           AAPL
+  ──────────────────────── ────────────── ────────────── ──────────────
+  Price ($)                       $177.64        $352.82        $258.86
+  Rev Growth (%)                    73.2%          -3.1%          15.7%
+  Gross Margin (%)                 71.07%         18.03%         47.33%
+  L1 Quality Gate              PASS (5/5)     FAIL (3/5)     PASS (5/5)
+  Weighted EV                      +51.8%          -0.5%          +9.5%
+  VERDICT                         [ENTER]        [AVOID]    [WATCHLIST]
+```
 
 ---
 
@@ -111,66 +148,12 @@ Adjust one layer's rules per cycle. Document every change in `CHANGELOG.md`.
 
 ---
 
-## Instrument Decision Logic
-
-```
-Q1: Clear 12–24 month catalyst?
-├─ YES → LEAPS
-│  ├─ Q2: IV environment normal? → Buy now
-│  ├─ Q2: IV high (pre-earnings)? → Wait for IV crush
-│  ├─ Q3: Deep ITM (δ 0.70–0.80) → Less timing risk
-│  └─ Q3: Near-money (δ 0.45–0.60) → More leverage, precise timing needed
-└─ NO → Stock only. Never options without a catalyst.
-```
-
----
-
-## Data Collection
-
-`data_fetch.py` pulls L1/L2 data from Yahoo Finance. Output field names map **directly** to wizard input IDs for easy copy-paste.
-
-Fields marked `MANUAL` in the output require official filings:
-
-| Data | Source |
-|------|--------|
-| Revenue / Gross Margin | Company 10-K / [Macrotrends](https://macrotrends.net) |
-| Consensus estimates | Yahoo Finance → Analysts tab |
-| Short float % | [Finviz](https://finviz.com) |
-| IV percentile | Your broker's options chain |
-
----
-
-## Roadmap
-
-| Version | Trigger | Planned Change |
-|---------|---------|----------------|
-| v1.1 | ✅ First calibration | Sector-aware L1 thresholds, bull guardrail, edge type picker |
-| v1.2 | After 2nd calibration | Brier score for L3 probability calibration |
-| v1.3 | After 3rd calibration | IV percentile input + theta-adjusted EV estimate |
-| v2.0 | After 45+ trades | Watchlist tab, correlation tracker, Python → browser auto-fill |
-
----
-
-## Backing Up Your Data
-
-FAIM stores everything in your browser's `localStorage`. Back up regularly:
-
-```javascript
-// Browser DevTools Console (⌘⌥J on Mac):
-copy(localStorage.getItem('faim_v1'))
-// Paste into backup_YYYY-MM-DD.json
-```
-
-Or use the **↓ CSV** button in the Trade Cards tab.
-
----
-
 ## Disclaimer
 
-This is a **paper trading and educational framework**. Not financial advice.  
-Options trading involves significant risk including total loss of premium paid.  
+This is a **paper trading and educational framework**. Not financial advice.
+Options trading involves significant risk including total loss of premium paid.
 Always verify data with official filings. Consult a licensed financial advisor.
 
 ---
 
-*FAIM v1.1.0 · Built on first principles · Calibrated by real markets over time*
+*FAIM v2.0.0 · Built on first principles · Calibrated by real markets over time*

@@ -1,44 +1,40 @@
-# Python
+# FAIM v2.0 — .gitignore
+
+# ── Python ────────────────────────────────────────────
 __pycache__/
 *.py[cod]
-*.pyc
-*.pyo
-*.pyd
-.Python
+*$py.class
+*.so
 *.egg-info/
 dist/
 build/
 .eggs/
-pip-log.txt
-
-# Virtual environments
+*.egg
 .venv/
 venv/
 env/
-ENV/
 
-# macOS
+# ── macOS ─────────────────────────────────────────────
 .DS_Store
-.AppleDouble
-.LSOverride
 ._*
 .Spotlight-V100
 .Trashes
+.AppleDouble
+.LSOverride
 
-# IDE / editors
+# ── IDE / Editor ──────────────────────────────────────
 .vscode/
 .idea/
-*.sublime-project
-*.sublime-workspace
 *.swp
 *.swo
 *~
+.project
+.classpath
+.settings/
 
-# Browser / app artifacts
-*.log
-
-# Data backups (keep pattern, ignore actual files)
+# ── Data backups ──────────────────────────────────────
 backup_*.json
 
-# Internal review notes (not for publication)
+# ── Internal documents (not for publication) ──────────
+内部文档/
 逻辑审查笔记.md

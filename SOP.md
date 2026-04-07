@@ -1,325 +1,433 @@
-# FAIM v1.0 — 标准操作程序 (SOP)
-**Fine Art Investment Model · 精艺投资模型**  
-*以高盛资深投资经理视角撰写 · 仅供纸上交易学习使用*
+# FAIM v2.0 — Standard Operating Procedure (SOP)
+
+**Fine Art Investment Model · Five-Layer Decision Protocol**
+*A structured, self-improving framework for retail investors with analytical backgrounds*
 
 ---
 
-## 0. 核心原则（不可违背）
+## 0. Prime Directives (Non-Negotiable)
 
 ```
-1. 没有数字的逻辑不是逻辑 — 所有判断必须量化
-2. 先定义失败条件，再想象成功 — Kill Switch 优先
-3. 深度胜过广度 — 只专注 AI基础设施 + 能源转型 两个赛道
-4. 耐心是散户最大的结构性优势 — 时间跨度 12–24 个月
-5. 纸上交易满 15 次后才能动真金白银 — 无例外
+1. No story without numbers     — Every judgment is quantified or it doesn't exist.
+2. Kill switch before bull case — Define failure conditions first, success conditions second.
+3. Depth beats breadth          — AI Infrastructure + Energy Transition + Mega-Cap Tech.
+4. Patient capital wins         — 12–24 month time horizon. Time is the retail edge.
+5. Paper trade 15 → calibrate → real money. Zero exceptions.
 ```
+
+> **Why these rules exist:**
+> Rule 1 defeats narrative bias (Kahneman's "What You See Is All There Is").
+> Rule 2 defeats optimism bias (Tetlock: uncalibrated forecasters fail).
+> Rule 3 defeats diversification theater (Buffett: wide diversification is for those who don't know what they're doing).
+> Rule 4 defeats impatience (institutional money has quarterly pressure; you don't).
+> Rule 5 defeats overconfidence (the #1 killer of retail portfolios).
 
 ---
 
-## 1. 项目结构
+## 1. Architecture Overview
 
+### Python Stack (Primary — your working tools)
 ```
 Model_v1/
-├── index.html        ← 主入口，浏览器直接打开
-├── core.js           ← 状态管理 / 计算引擎
-├── wizard.js         ← 五层分析向导
-├── cards.js          ← 交易卡片 + 校准看板
-├── style.css         ← 样式
-├── data_fetch.py     ← 数据抓取辅助脚本（见第3节）
-└── SOP.md            ← 本文件
+├── faim_engine.py    ← Core 5-layer engine (all logic lives here)
+├── analyze.py        ← Run analysis on any ticker(s)
+├── data_fetch.py     ← Quick data lookup helper
+├── reports/          ← Generated markdown reports (auto-created)
+│   ├── NVDA_report.md
+│   ├── TSLA_report.md
+│   └── AAPL_report.md
+└── requirements.txt  ← Dependencies: yfinance, pandas
 ```
 
-**启动方式：**
-```bash
-# 方法A：直接双击 index.html（最简单）
-
-# 方法B：本地服务器（推荐，避免浏览器安全限制）
-cd "Model_v1/"
-python -m http.server 8080
-# 然后浏览器打开 http://localhost:8080
+### Web App (Visual companion — for logging & review)
+```
+├── index.html        ← App entry point (double-click or local server)
+├── core.js           ← State, math engine, sector thresholds
+├── wizard.js         ← Interactive 5-layer wizard
+├── cards.js          ← Trade card log + calibration dashboard
+└── style.css         ← UI design system
 ```
 
----
-
-## 2. 每次分析前的数据准备清单
-
-在打开应用之前，先用 `data_fetch.py` 或手动查询以下数据。  
-**数据来源优先级：** 公司官方财报 > Macrotrends > Yahoo Finance > Seeking Alpha
-
-### 2.1 第零层 — 基础信息
-| 字段 | 来源 | 示例值 |
-|------|------|--------|
-| 股票代码 | — | NVDA |
-| 当前股价 | Yahoo Finance / 券商App | $875.00 |
-| 种子论点 | 你自己写，一句话 | "AI算力需求持续超预期，H100供不应求" |
-
-### 2.2 第一层 — 质量门槛数据
-| 字段 | 来源 | 阈值 |
-|------|------|------|
-| 营收同比增长率 (%) | Macrotrends → Revenue | >15% |
-| 毛利率 (%) | Macrotrends → Gross Profit Margin | >40% |
-| 毛利率年变化 (bps) | 近两年毛利率之差 × 100 | >200 bps |
-| 现金跑道 (月) | 现金 ÷ 季度现金消耗 × 3 | >18 个月 |
-| ROIC vs WACC | Macrotrends / 自算 | ROIC > WACC |
-| 管理层资本配置评分 | 主观评分，参考历史并购/回购 | 3–5 分通过 |
-
-### 2.3 第二层 — 错误定价数据
-| 字段 | 来源 |
-|------|------|
-| 隐含增长率 | 用当前 P/E 或 EV/Revenue 反推：隐含增长 ≈ (当前倍数 - 行业均值) / 行业均值 × 平均增速 |
-| 市场一致预期增长 | Yahoo Finance → Analysts → Revenue Estimates (下一年 %) |
-| 你的增长预测 | 基于行业草根调研/管理层指引/你自己的模型 |
-| 融券比例 (%) | Finviz → Short Float % |
-| 你的核心边缘 | 一句话描述你的信息优势 |
-
-> **融券比例参考：**  
-> - < 5%：可能是拥挤多头，注意  
-> - 5–15%：正常区间  
-> - > 15%：可能是被低估的逆向机会，也可能有基本面问题
-
-### 2.4 第三层 — 情景假设数据
-| 字段 | 说明 |
-|------|------|
-| Kill Switch | **最先填写**。明确触发退出的条件（财务指标 or 事件） |
-| 牛市目标价 | 基于 DCF 或行业倍数法，写明估值方法 |
-| 基础目标价 | 按当前增速线性外推 |
-| 熊市目标价 | 假设最坏情况：增长失速、竞争加剧 |
-| 三种概率之和 | **必须 = 100%**，应用会自动校验 |
-
-> **概率分配参考原则：**  
-> 新手阶段建议：牛 25% / 基 50% / 熊 25%  
-> **不要把牛市概率写超过 40%，这是自我欺骗的信号。**
-
-### 2.5 第四层 — 期权参数（如用 LEAPS）
-| 字段 | 来源 | 说明 |
-|------|------|------|
-| 行权价 | 券商期权链 | 首选 Delta 0.70–0.80（深度实值） |
-| Delta 值 | 券商期权链 | 越高越像持股 |
-| 期权权利金/股 | 券商期权链 | 实际买价 |
-| 到期日 | 选择 | 最少 12 个月，首选 18–24 个月 |
-
----
-
-## 3. 数据抓取辅助脚本
-
-> 使用 `data_fetch.py`（已在项目根目录），在终端运行：
-
+### Getting Started
 ```bash
+# Install dependencies (one time)
 pip install yfinance pandas
 
-# 单只股票
-python data_fetch.py NVDA
+# Run analysis
+python analyze.py                    # NVDA, TSLA, AAPL full reports
+python analyze.py NVDA               # Single ticker
+python analyze.py --compare          # Side-by-side table
+python analyze.py --report           # Save markdown to reports/
 
-# 多只股票对比
-python data_fetch.py NVDA CEG VST ANET
+# Quick data fetch
+python data_fetch.py NVDA            # Full data sheet
+python data_fetch.py CEG --sector energy   # Energy sector thresholds
 
-# JSON输出
-python data_fetch.py NVDA --json
-```
-
-输出字段与向导输入 ID 直接对应。标记 `MANUAL` 的字段需人工查阅官方财报核对。
-
----
-
-## 4. 五层分析 SOP（逐步操作）
-
-### Step 0 — 开始前的自问
-```
-□ 这家公司属于 AI基础设施 或 能源转型 赛道吗？
-□ 我有明确的 12–24 个月催化剂吗？
-□ 我已经用 data_fetch.py 或手动拉取了基础数据吗？
-→ 三个都是 YES → 打开 index.html，开始分析
-→ 任何一个 NO → 停止，先做研究
-```
-
-### Step 1 — 在应用中填写（Setup 页）
-1. 输入代码（大写）和当前价格
-2. 选择赛道归属
-3. 写下种子论点（**一句话，必须包含数字**）
-   - ❌ 错误示例："这个公司很有潜力"
-   - ✅ 正确示例："FY25 数据中心收入预计增速 >80%，市场一致预期仅 60%"
-
-### Step 2 — L1 质量门槛
-- 填写从 data_fetch.py 获取的数据
-- 需 4/5 项通过，否则系统输出 FAIL，本次分析终止
-- **FAIL 不是失败，是保护你不做低胜率的交易**
-
-### Step 3 — L2 错误定价检测
-- 核心：**你的增长预测 vs 市场一致预期**，差值 ≥ 10% 才有边缘
-- 融券比例 < 5%：可能是拥挤多头，注意
-- 融券比例 > 15%：可能是被低估的逆向机会，也可能有基本面问题
-
-### Step 4 — L3 情景构建（最重要的一步）
-```
-填写顺序（严格遵守）：
-1. Kill Switch 先写 → 触发什么条件立即退出
-2. 熊市情景 → 什么会让你彻底错了
-3. 基础情景 → 没有惊喜的稳态
-4. 牛市情景 → 最乐观但合理的情况
-5. 调整概率直到三者之和 = 100%（应用会校验）
-```
-
-**⚠ 牛市概率不要超过 40%。超过即为自我欺骗。**
-
-### Step 5 — L4 仓位与期权参数
-```
-期权选择决策树：
-├─ 有明确 12mo+ 催化剂？
-│  ├─ YES → LEAPS
-│  │  ├─ Delta 0.70–0.80 → 深度实值，稳健
-│  │  └─ Delta 0.45–0.60 → 更高杠杆，需精准时机
-│  └─ NO → 正股，不买期权
-└─ IV 是否异常高（如财报前）？
-   └─ YES → 等财报后 IV 压缩再买 LEAPS
-```
-
-**仓位规则（纸上交易阶段 $10,000 组合）：**
-| 信心等级 | EV/风险比 | 仓位 |
-|---------|-----------|------|
-| 高 | > 2.5× | 5–8%（$500–$800） |
-| 中 | 1.5–2.5× | 2–4%（$200–$400） |
-| 低 | < 1.5× | 不进场，进观察名单 |
-
-### Step 6 — L5 监控计划
-填写 3 个检查点（必须是具体日期 + 事件）：
-```
-示例：
-检查点1: 2025-01-15 · Q3 财报发布，关注数据中心营收
-检查点2: 2025-03-01 · CUDA 新驱动发布，关注客户采用率
-检查点3: 2025-06-01 · 竞争对手 MI300X 出货数据
-```
-
-**退出条件（提前写好，不允许临时更改）：**
-```
-□ 目标价达到 → 卖出 50–75%，剩余设移动止损
-□ Kill Switch 触发 → 5 个交易日内全部清仓
-□ LEAPS 距到期 < 60 天且论点未兑现 → 展期或清仓
-□ 出现更好机会且本仓论点开始弱化 → 轮换
+# Web app (visual tool for logging trades)
+python -m http.server 8080           # → http://localhost:8080
 ```
 
 ---
 
-## 5. 交易卡片管理 SOP
+## 2. Pre-Analysis Checklist
 
-### 5.1 记录卡片（每次分析结束后）
-- 在应用 Summary 页点击 **"Log Trade Card"**
-- 系统自动保存到浏览器 localStorage
-- 每周备份（两种方式）：
-  1. 点击 **"↓ CSV"** 导出，保存到本地文件夹
-  2. 浏览器控制台执行 `copy(localStorage.getItem('faim_v1'))` → 粘贴为 `backup_YYYYMMDD.json`
+Before running any analysis, answer these three questions:
 
-### 5.2 更新卡片状态（每个检查点到来时）
-1. 进入 Trade Cards 标签页
-2. 展开对应卡片
-3. 填写退出信息（退出日期、退出价格、实际回报率）
-4. 填写复盘问题（论点对？时机对？仓位对？下次改什么？）
-5. 更新状态为 `Closed Win` / `Closed Loss` / `Rolled`
+```
+□ Does this company fit AI Infrastructure, Energy Transition, or Mega-Cap Tech?
+  → NO → Stop. Wrong universe. The model is not designed for it.
 
-### 5.3 数据备份策略
-```javascript
-// 浏览器控制台（DevTools → Console）执行：
+□ Do I have a clear 12–24 month catalyst (earnings, product launch, regulatory)?
+  → NO → The thesis is not actionable. Go to watchlist.
+
+□ Have I pulled the data (python analyze.py TICKER or data_fetch.py)?
+  → NO → Never trust memory. Pull real numbers first.
+```
+
+### Data Sources (Priority Order)
+| Source | Use For | Trust Level |
+|--------|---------|-------------|
+| 10-K / 10-Q filings | Revenue, margins, cash flow | ★★★★★ Primary |
+| Macrotrends.net | Historical trend data | ★★★★ Good |
+| Yahoo Finance API | Quick screen, analyst targets | ★★★ Screen only |
+| Seeking Alpha | Qualitative research | ★★ Cross-reference |
+
+> **Rule:** Never make an investment decision using only API data.
+> Always verify L1 numbers against official filings before logging a trade card.
+
+---
+
+## 3. The Five-Layer Protocol (Step-by-Step)
+
+### Layer 0 — Setup & Classification
+
+**What you do:** Identify the ticker, current price, sector, and seed thesis.
+
+**Sector Profiles & Thresholds:**
+| Metric | AI Infrastructure | Energy Transition | Mega-Cap Tech |
+|--------|-------------------|-------------------|---------------|
+| Rev Growth min | >15% | >5% | >5% |
+| Gross Margin min | >40% | >20% | >35% |
+| GM Trend min | >200 bps/yr | >50 bps/yr | >50 bps/yr |
+| Cash Runway min | >18 months | >18 months | >24 months |
+| Mgmt Score min | ≥3/5 | ≥3/5 | ≥3/5 |
+
+**Seed Thesis Format:**
+```
+❌ Wrong: "This company has potential"
+❌ Wrong: "AI is the future"
+✅ Right: "FY26 data center revenue growth >80%, consensus at 60% → 20pt gap"
+✅ Right: "Services revenue at $100B run rate priced at 8x, peers at 12x"
+```
+
+> **The seed thesis must contain at least one number.** If you can't quantify
+> your thesis, you don't have a thesis — you have a feeling.
+
+---
+
+### Layer 1 — Quality Gate (4 of 5 checks must pass)
+
+**Purpose:** Filter out weak companies in 60 seconds. This is a binary PASS/FAIL.
+
+| Check | What to Look For | Pass Condition |
+|-------|-----------------|----------------|
+| Revenue Growth | YoY growth rate | ≥ sector minimum |
+| Gross Margin / Trend | Current GM or improving trend | GM ≥ min OR trend ≥ min bps |
+| ROIC vs WACC | Are they creating value? | ROIC > ~9% (market WACC) |
+| Balance Sheet | Can they survive a downturn? | ≥18 months runway or self-funding |
+| Management | Capital allocation track record | ≥3/5 auto-score |
+
+**How auto-scoring works (Management):**
+```
++1 point: Positive free cash flow
++1 point: ROIC > 15%
++1 point: Net cash positive (cash > debt)
++1 point: Revenue growing
++1 point: Operating margin positive
+Need ≥ 3/5 to pass
+```
+
+> **L1 FAIL is not failure — it's protection.**
+> A FAIL means the company's current fundamentals don't support high-EV entry.
+> Add to watchlist. Re-evaluate next quarter.
+
+---
+
+### Layer 2 — Mispricing Detector (≥10% gap required)
+
+**Purpose:** Find where the market is wrong. No edge = no trade.
+
+```
+Gap = Your Growth Estimate - Consensus Estimate
+If |Gap| ≥ 10% → "IDENTIFIED" (you may have an edge)
+If |Gap| < 10% → "NOT FOUND" (you're trading consensus = no alpha)
+```
+
+**Edge Types (you must select one):**
+| Type | Example |
+|------|---------|
+| Channel / Supply Chain | "My industry contacts say orders are 2x consensus" |
+| Wrong Metric (Anchoring) | "Market uses P/E but should use EV/Revenue for pre-profit companies" |
+| Conservative Guidance | "Management guides low; last 8 quarters beat by 15%+" |
+| Historical Analog | "This looks like AWS 2015 — market didn't price cloud correctly" |
+| Structural Shift | "AI capex is structural, not cyclical — market treats it as cyclical" |
+
+> **The Goldman Test:** Would a Goldman PM say "interesting" or "everyone knows that"?
+> If everyone knows it, your edge is zero. Don't trade.
+
+**Short Float Reference:**
+- <2%: Institutional consensus, possibly crowded long
+- 2-10%: Normal range
+- 10-15%: Contrarian opportunity OR fundamental problem — investigate
+- >15%: High risk. Requires very strong conviction.
+
+---
+
+### Layer 3 — Thesis Construction (Most Critical Step)
+
+**Purpose:** Force quantified scenario analysis. Numbers, not adjectives.
+
+**Strict fill order:**
+```
+1. Kill Switch FIRST → What specific condition triggers immediate exit?
+2. Bear Case     → What makes you totally wrong?
+3. Base Case     → What happens if nothing surprising occurs?
+4. Bull Case     → What's the best realistic outcome?
+5. Probabilities → Must sum to 100%. Bull ≤ 40%.
+```
+
+> **⚠ Never fill the Bull case first.** You will anchor on optimism.
+> Kahneman: "The anchoring effect is one of the most robust findings in psychology."
+
+**Probability Guidelines (Beginner Stage):**
+| Profile | Bull | Base | Bear | Notes |
+|---------|------|------|------|-------|
+| Conservative | 20% | 55% | 25% | Recommended for first 15 trades |
+| Standard | 25% | 50% | 25% | After first calibration cycle |
+| Aggressive | 35% | 40% | 25% | Only with demonstrated calibration accuracy |
+
+> **Hard Rule: Bull probability > 40% = self-deception.**
+> If you genuinely believe bull is >40%, your base case isn't conservative enough.
+> Redistribute probability to base.
+
+**Kill Switch Examples:**
+```
+Good: "Exit if gross margin < 60% for any quarter"
+Good: "Exit if data center revenue growth < 30% YoY for 2 consecutive quarters"
+Good: "Exit if CEO departs or major management change"
+Bad:  "Exit if the stock drops 20%" (that's a trailing stop, not a thesis exit)
+Bad:  "Exit when I feel like it" (no discipline = no edge)
+```
+
+---
+
+### Layer 4 — Position Sizing
+
+**Purpose:** Convert EV/Risk ratio to conviction and allocation.
+
+**EV Calculation:**
+```
+For stocks:
+  Weighted EV = (Bull% × Bull Return%) + (Base% × Base Return%) + (Bear% × Bear Return%)
+
+For LEAPS:
+  Bull Return = delta × (bull_target - price) / premium × 100
+  Base Return = delta × (base_target - price) / premium × 100
+  Bear Return = user-defined (typically -80% to -100%)
+```
+
+**Conviction → Allocation:**
+| EV/Risk Ratio | Conviction | Allocation | Action |
+|---------------|------------|------------|--------|
+| > 2.5× | HIGH | 5–8% | Stage entry: 50% now, 50% on next data point |
+| 1.5–2.5× | MEDIUM | 2–4% | Stage entry: 50/50 |
+| < 1.5× | LOW | 0% | Watchlist only. No position. |
+
+**Instrument Decision Tree:**
+```
+Q1: Clear 12–24 month catalyst?
+├── YES → LEAPS possible
+│   ├── Q2: IV environment normal? → Buy now
+│   ├── Q2: IV high (pre-earnings)? → Wait for IV crush, then buy
+│   ├── Q3: Deep ITM (δ 0.70–0.80) → Lower risk, behaves like stock
+│   └── Q3: Near-money (δ 0.45–0.60) → More leverage, needs precise timing
+└── NO → Stock only. LEAPS without catalyst = time decay trap.
+```
+
+**LEAPS Rules:**
+- Minimum 12 months to expiry. Prefer 18–24 months.
+- Never hold past 60 DTE without rolling (if thesis intact) or closing (if thesis damaged).
+- Deep ITM (δ 0.70–0.80) for conviction plays. Near-money for speculative.
+
+**Correlation Guard:**
+- Maximum 8% of portfolio in correlated positions (same sector).
+- If you already have 5% in NVDA, adding 5% in AMD violates the guard.
+
+---
+
+### Layer 5 — Monitoring & Exit Protocol
+
+**Purpose:** Pre-commit to exit rules. Write them at entry. Lock them. Never revise under pressure.
+
+**Three Checkpoints (mandatory):**
+```
+Each checkpoint = specific date + specific event + what to look for
+
+Example:
+  CP1: 2026-05-15 · Q1 FY27 Earnings · Data center revenue growth ≥ 80% YoY
+  CP2: 2026-09-01 · GTC Fall · Blackwell Ultra architecture announcement
+  CP3: 2027-01-15 · Q3 FY27 Earnings · Guidance for FY28 ≥ $200B revenue
+```
+
+**Exit Rules (pre-committed, non-negotiable):**
+| Condition | Action |
+|-----------|--------|
+| Bull target hit | Sell 50–75%. Set trailing stop on remainder. |
+| Kill switch triggered | Full exit within 5 trading days. No exceptions. |
+| LEAPS < 60 DTE + thesis intact | Roll forward to next available expiry. |
+| Better opportunity + thesis weakening | Rotate. Document reason. |
+
+**"What Would Change My Mind?" (Write this at entry):**
+> This is the single most important discipline. Pre-committing to
+> intellectual honesty prevents moving the goalposts after losses.
+
+---
+
+## 4. Trade Card Management
+
+### Logging a Trade Card
+After completing the 5-layer analysis:
+1. Click **Log Trade Card** in the Summary page (web app)
+2. OR record manually: ticker, date, instrument, entry price, allocation, EV, conviction, thesis, kill switch, checkpoints
+
+### Updating Card Status
+At each checkpoint or exit event:
+1. Record: exit date, exit price, actual return %
+2. Self-assess: Thesis right? Timing right? Sizing right? Exit discipline?
+3. Set status: `Closed Win` / `Closed Loss` / `Rolled`
+
+### Backup Strategy
+```bash
+# Option 1: CSV export (from web app Trade Cards tab)
+# Click "↓ CSV" button
+
+# Option 2: localStorage JSON backup
+# Browser Console (⌘⌥J):
 copy(localStorage.getItem('faim_v1'))
-// 粘贴到新文件 backup_YYYYMMDD.json，保存到本地
+# Paste into backup_2026-04-06.json
 ```
 
 ---
 
-## 6. 校准复盘 SOP（满足条件后解锁）
+## 5. Calibration Protocol
 
-### 6.1 触发条件（两个条件同时满足）
-- 累计记录 **≥ 15 张**交易卡片
-- 其中至少 **10 张状态为 Closed**（Closed Win 或 Closed Loss）
+### Trigger Conditions (both must be met)
+- ≥ 15 total trade cards logged
+- ≥ 10 cards in Closed status (Win or Loss)
 
-### 6.2 复盘问题清单
+### Calibration Review Checklist
 ```
-A. 胜率检查
-   □ 实际胜率 vs 预期胜率（我的牛市概率是否高估了？）
-   □ 平均回报率 vs 目标 EV（模型的 EV 计算是否准确？）
+A. Win Rate Analysis
+   □ Actual win rate vs predicted probability
+   □ Average return vs predicted weighted EV
+   □ Are you systematically overestimating your edge?
 
-B. 系统性偏差检查（应用会自动显示）
-   □ 是否系统性"进场太早"？（催化剂未成熟就进）
-   □ 是否系统性"进场太晚"？（大部分涨幅已完成）
-   □ 是否高胜率但低回报？（仓位太保守）
+B. Systematic Bias Detection (auto-computed)
+   □ Timing: Too early (>40% of trades "Early") → Entering before catalysts confirm
+   □ Timing: Too late (>40% "Late") → Entering after most of the move
+   □ High win rate + low return → Sizing too conservative
+   □ Low win rate → L1/L2 gates too loose
 
-C. 层级弱点分析
-   □ L1 弱 → 放松了质量标准，重新收紧阈值
-   □ L2 弱 → 没有真实边缘就进场，提高错误定价门槛
-   □ L3 弱 → 情景构建不严谨，重新校准概率分配习惯
-   □ L4 弱 → 仓位不匹配信心，重新练习仓位规则
-   □ L5 弱 → 没有执行退出纪律，加强 Kill Switch 纪律
+C. Layer Weakness Radar (auto-scored L1–L5)
+   □ Lowest score = layer to review first
+   □ Adjust that layer's thresholds or process
+   □ Document the change in CHANGELOG.md
 
-D. 模型更新
-   □ 记录本轮发现的系统性问题
-   □ 调整对应层的阈值或规则
-   □ 更新 SOP 文档，注明版本和日期
-   □ 开始下一轮 15 张循环
+D. Model Update
+   □ Record what changed and why
+   □ Update SOP version if process changed
+   □ Start next 15-card calibration cycle
+```
+
+### Model Iteration Rules
+```
+Allowed at any time:
+  - Portfolio size adjustment (Settings)
+  - Adding notes to existing cards
+
+Allowed after calibration cycle (15 trades):
+  - Adjusting L1 thresholds (e.g., raise revenue growth min from 15% to 20%)
+  - Adjusting probability distribution habits
+  - Adjusting position sizing rules
+
+Requires extraordinary evidence:
+  - Changing the 5-layer framework structure itself
+  - Removing a gate or check entirely
+  - Changing the 15-trade calibration cycle length
+```
+
+> **Never modify the model after a single loss.** That's emotional reaction,
+> not data-driven improvement. Wait for the calibration cycle.
+
+---
+
+## 6. FAQ
+
+**Q: L1 FAIL — is this analysis wasted?**
+A: No. FAIL is a conclusion: this company's current fundamentals don't support
+high-EV entry under FAIM's framework. Add to watchlist. Re-evaluate next quarter.
+
+**Q: TSLA/AAPL keep coming up as AVOID/WATCHLIST. Is the model broken?**
+A: The model is working correctly. AAPL has no clear 12-24 month catalyst and
+limited mispricing gap (consensus is accurate). TSLA has low gross margins and
+negative revenue growth — it fails L1 Quality Gate on fundamentals. The model
+is designed for high-growth mispriced opportunities, not stable compounders.
+
+**Q: How do I handle stocks outside AI/Energy/Mega-Tech sectors?**
+A: Don't. Sector focus is a feature, not a limitation. Breadth without depth
+produces mediocre returns. If you want to analyze healthcare or financials, build
+a separate model with sector-appropriate thresholds.
+
+**Q: I don't have options trading permission. Can I still use FAIM?**
+A: Yes. Select "Stock" as the instrument. Do 15 paper trades, then apply for options
+permission with your broker — having a documented paper trading record helps.
+
+**Q: data_fetch.py numbers differ from the 10-K. Which do I trust?**
+A: Official filings. Always. The API is for quick screening. Core numbers
+(revenue, margins, cash flow) must be verified from SEC filings or Macrotrends.
+
+---
+
+## 7. Quick Reference Card
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  FAIM v2.0 Quick Check                                          │
+├─────────────────────────────────────────────────────────────────┤
+│  BEFORE:                                                        │
+│  □ Ran data_fetch.py or analyze.py for this ticker              │
+│  □ Company fits AI Infra / Energy Transition / Mega-Cap Tech    │
+│  □ Clear 12–24 month catalyst identified                        │
+│  □ Verified L1 numbers against official filings                 │
+│                                                                 │
+│  DURING:                                                        │
+│  □ Kill Switch filled FIRST                                     │
+│  □ Bull probability ≤ 40%                                       │
+│  □ Probabilities sum to exactly 100%                            │
+│  □ LEAPS: Delta 0.70–0.80, expiry ≥ 12 months                  │
+│  □ Single position ≤ 5%, correlated total ≤ 8%                  │
+│                                                                 │
+│  AFTER:                                                         │
+│  □ Trade card logged (web app or manual record)                 │
+│  □ 3 checkpoints on calendar with reminders                     │
+│  □ Weekly backup (CSV or JSON)                                  │
+│                                                                 │
+│  GOLDEN RULE:                                                   │
+│  Paper trade 15x (10 closed) → Calibrate → Then real money      │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 7. 模型迭代规则
-
-```
-版本控制原则：
-- 每完成 15 张校准后，才允许修改模型规则
-- 每次修改必须记录：改了什么 / 为什么改 / 基于哪些数据
-- 不允许在单笔亏损后立即修改规则（情绪性修改）
-
-修改权限分级：
-├─ 可随时调整：投资组合总额（Settings）
-├─ 校准后可调整：各层阈值（如 L1 营收增速门槛从 15% 改为 20%）
-└─ 需重大证据才调整：五层框架结构本身
-```
-
----
-
-## 8. 常见问题
-
-**Q: L1 FAIL 了，这次分析是否浪费了？**  
-A: 不浪费。FAIL 本身就是结论——它告诉你这只股票当前基本面不支持高 EV 进场。把它加入观察名单，等下一季度财报后重新评估。
-
-**Q: 分析 Tesla/Apple 结果都是 FAIL，模型有问题吗？**  
-A: 模型正确。这两家公司当前营收增速均 <5%，不符合本模型针对高增长错误定价机会的设计逻辑。正确目标：NVDA、CEG、VST、ANET 等高增长赛道标的。
-
-**Q: 没有期权账户权限怎么办？**  
-A: 先用正股做纸上交易。记录时在 L4 选择"Stock"。等积累 15 张纸上交易记录，向券商申请期权权限时有据可查。
-
-**Q: data_fetch.py 的数据和财报数据不一致怎么办？**  
-A: 以官方财报为准。`data_fetch.py` 仅用于快速初筛，Yahoo Finance API 有延迟且部分计算口径不同。核心数据（毛利率、营收）必须从公司 10-K/10-Q 或 Macrotrends 核对。
-
-**Q: 如何决定是否展期 LEAPS？**  
-A: 两个条件同时满足才展期：(1) 距到期 < 60 天；(2) 论点仍然有效，只是时间还没到。如果论点本身受损，清仓比展期更正确。
-
----
-
-## 9. 快速参考卡（每次分析前过一遍）
-
-```
-┌────────────────────────────────────────────────────────┐
-│  FAIM 快速检查卡                                        │
-├────────────────────────────────────────────────────────┤
-│  BEFORE:                                               │
-│  □ 跑了 data_fetch.py 或手动准备数据                   │
-│  □ 这个标的属于 AI基础设施 / 能源转型                  │
-│  □ 有明确催化剂和时间节点                              │
-│                                                        │
-│  DURING:                                               │
-│  □ Kill Switch 第一个填                                │
-│  □ 牛市概率 ≤ 40%（超过即为自我欺骗）                  │
-│  □ 概率之和 = 100%                                     │
-│  □ LEAPS Delta 0.70–0.80，到期 ≥ 12 个月              │
-│  □ 单仓 ≤ 5%，相关仓合计 ≤ 8%                         │
-│                                                        │
-│  AFTER:                                                │
-│  □ Log Trade Card                                      │
-│  □ 日历上标注 3 个检查点                               │
-│  □ 每周 CSV 备份 或 localStorage JSON 备份             │
-│                                                        │
-│  RULE: 纸上交易 15 次（含 10 次 Closed）→ 校准 → 才动真钱 │
-└────────────────────────────────────────────────────────┘
-```
-
----
-
-*FAIM v1.0 · SOP 版本 1.0*  
-*本文件随每轮校准更新 · 下一次更新：满 15 张卡片（含 10 Closed）后*
+*FAIM v2.0 · SOP Version 2.0 · Updated: 2026-04-06*
+*This document updates after each 15-card calibration cycle*
